@@ -3,30 +3,60 @@
  */
 
 'use strict';
+const wait = () => new Promise((resolve) => setTimeout(resolve, 10));
 
 module.exports = {
-  syncHandler: (event, context, callback) => {
+  eventSyncHandler: (event, context, callback) => {
     // eslint-disable-next-line no-console
-    console.log('SYNC_HANDLER');
+    console.log('EVENT_SYNC_HANDLER');
     callback(null, { result: event.name });
   },
-  syncHandlerWithError: (event, context, callback) => {
+  eventSyncHandlerWithError: (event, context, callback) => {
     // eslint-disable-next-line no-console
-    console.log('SYNC_HANDLER');
+    console.log('EVENT_SYNC_HANDLER');
     callback('SYNC_ERROR');
   },
-  asyncHandler: async (event, context) => {
+  eventAsyncHandler: async (event, context) => {
     // eslint-disable-next-line no-console
-    console.log('ASYNC_HANDLER');
+    console.log('EVENT_ASYNC_HANDLER');
+    await wait();
     return { result: context.name };
   },
-  asyncHandlerWithError: async () => {
+  eventAsyncHandlerWithError: async () => {
     // eslint-disable-next-line no-console
-    console.log('ASYNC_HANDLER');
+    console.log('EVENT_ASYNC_HANDLER');
+    await wait();
     throw new Error('ASYNC_ERROR');
   },
-  envHandler: async () => {
+  eventEnvHandler: async () => {
     // eslint-disable-next-line no-console
     console.log(process.env.MY_VAR);
+  },
+  httpSyncHandler: (req, res) => {
+    // eslint-disable-next-line no-console
+    console.log('HTTP_SYNC_HANDLER');
+    res.send({ responseMessage: req.body.message });
+  },
+  httpSyncHandlerWithError: () => {
+    // eslint-disable-next-line no-console
+    console.log('HTTP_SYNC_HANDLER');
+    throw new Error('SYNC_ERROR');
+  },
+  httpAsyncHandler: async (req, res) => {
+    // eslint-disable-next-line no-console
+    console.log('HTTP_ASYNC_HANDLER');
+    await wait();
+    res.send({ responseMessage: req.body.message });
+  },
+  httpAsyncHandlerWithError: async () => {
+    // eslint-disable-next-line no-console
+    console.log('HTTP_ASYNC_HANDLER');
+    await wait();
+    throw new Error('ASYNC_ERROR');
+  },
+  httpEnvHandler: (req, res) => {
+    // eslint-disable-next-line no-console
+    console.log(process.env.MY_VAR);
+    res.send('HTTP_SYNC_BODY');
   },
 };
